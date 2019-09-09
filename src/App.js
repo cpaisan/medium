@@ -3,6 +3,7 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/styles";
 import SearchInput from "components/SearchInput";
 
@@ -50,7 +51,16 @@ const useStyles = makeStyles({
     height: "max-content"
   },
   history: {
-    width: 300
+    width: 300,
+    position: 'absolute',
+  },
+  buttonLoader: {
+    position: "absolute",
+    placeSelf: "center"
+  },
+  contentLoader: {
+    placeSelf: "center",
+    gridArea: "content"
   }
 });
 
@@ -66,6 +76,7 @@ function App() {
   const [searchText, setSearchText] = useState("");
   const [feed, setFeed] = useState([]);
   const [searchHistory, setSearchHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const onSearchChange = ({ target: { value } }) => setSearchText(value);
 
@@ -78,7 +89,9 @@ function App() {
       } = await apiResponse.json();
       setFeed(items);
       setSearchHistory(updatedSearchHistory);
+      setLoading(false)
     } catch (e) {
+      setLoading(false)
       // TODO: display error
     }
   };
@@ -96,12 +109,30 @@ function App() {
         <Button
           variant="contained"
           color="primary"
-          onClick={requestMediumFeed}
+          disabled={loading}
+          onClick={e => {
+            setLoading(true);
+            requestMediumFeed(e);
+          }}
           className={classes.button}
         >
-          Search
+          Search{" "}
+          {loading && (
+            <CircularProgress
+              color="secondary"
+              size={30}
+              className={classes.buttonLoader}
+            />
+          )}
         </Button>
       </div>
+      {loading && (
+        <CircularProgress
+          color="secondary"
+          size={80}
+          className={classes.contentLoader}
+        />
+      )}
       {feed.length > 0 && (
         <div className={classes.content}>
           {feed.map(({ title = "", isoDate = null, content }) => (
