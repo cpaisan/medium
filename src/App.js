@@ -52,7 +52,7 @@ const useStyles = makeStyles({
   },
   history: {
     width: 300,
-    position: 'absolute',
+    position: "absolute"
   },
   buttonLoader: {
     position: "absolute",
@@ -61,6 +61,11 @@ const useStyles = makeStyles({
   contentLoader: {
     placeSelf: "center",
     gridArea: "content"
+  },
+  error: {
+    placeSelf: "center",
+    gridArea: "content",
+    color: "red"
   }
 });
 
@@ -77,10 +82,12 @@ function App() {
   const [feed, setFeed] = useState([]);
   const [searchHistory, setSearchHistory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const onSearchChange = ({ target: { value } }) => setSearchText(value);
 
   const requestMediumFeed = async () => {
+    if (error) setError(false);
     try {
       const apiResponse = await fetch(`${API_URL}/${searchText}`);
       const {
@@ -89,10 +96,10 @@ function App() {
       } = await apiResponse.json();
       setFeed(items);
       setSearchHistory(updatedSearchHistory);
-      setLoading(false)
+      setLoading(false);
     } catch (e) {
-      setLoading(false)
-      // TODO: display error
+      setLoading(false);
+      setError(true);
     }
   };
 
@@ -132,6 +139,11 @@ function App() {
           size={80}
           className={classes.contentLoader}
         />
+      )}
+      {error && (
+        <Typography variant="h6" className={classes.error}>
+          There was an error requesting the Medium feed. Please try again{" "}
+        </Typography>
       )}
       {feed.length > 0 && (
         <div className={classes.content}>
