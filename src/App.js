@@ -76,6 +76,10 @@ const DATE_OPTIONS = {
   year: "numeric"
 };
 
+/**
+  @param {function} setSearchHistory - Sets the search history state for our App component
+  @return {Promise}
+*/
 const requestSearchHistory = setSearchHistory =>
   fetch(`${API_URL}/search_history`)
     .then(res => res.json())
@@ -98,6 +102,12 @@ function App() {
 
   const onSearchChange = ({ target: { value } }) => setSearchText(value);
 
+  /**
+   Submits GET request to API for user input Medium feed
+   Sets search history, error, and feed data
+   @async
+   @return {undefined}
+   */
   const requestMediumFeed = async () => {
     if (error) setError(false);
     try {
