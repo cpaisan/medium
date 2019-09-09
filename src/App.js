@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -69,12 +69,20 @@ const useStyles = makeStyles({
   }
 });
 
-const API_URL = "http://localhost:3001/medium";
+const API_URL = "http://localhost:3001";
 const DATE_OPTIONS = {
   day: "numeric",
   month: "short",
   year: "numeric"
 };
+
+const requestSearchHistory = setSearchHistory =>
+  fetch(`${API_URL}/search_history`)
+    .then(res => res.json())
+    .then(({ searchHistory: searchHistoryData = [] }) =>
+      setSearchHistory(searchHistoryData)
+    )
+    .catch(e => console.warn(e));
 
 function App() {
   const classes = useStyles();
@@ -84,12 +92,16 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
+  useEffect(() => {
+    requestSearchHistory(setSearchHistory);
+  }, []);
+
   const onSearchChange = ({ target: { value } }) => setSearchText(value);
 
   const requestMediumFeed = async () => {
     if (error) setError(false);
     try {
-      const apiResponse = await fetch(`${API_URL}/${searchText}`);
+      const apiResponse = await fetch(`${API_URL}/medium/${searchText}`);
       const {
         items = [],
         searchHistory: updatedSearchHistory = []
