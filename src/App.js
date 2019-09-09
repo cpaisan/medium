@@ -13,7 +13,9 @@ const useStyles = makeStyles({
       "nav"
       "content"
     `,
-    padding: 32
+    padding: "32px 0 32px 0",
+    height: "calc(100vh - 64px)",
+    gridTemplateRows: "max-content auto"
   },
   nav: {
     gridArea: "nav",
@@ -26,9 +28,13 @@ const useStyles = makeStyles({
   },
   content: {
     marginTop: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
     gridArea: "content",
-    display: "flex",
-    flexWrap: "wrap",
+    display: "grid",
+    gridTemplateColumns: "50%",
+    height: "calc(100vh - 100px)",
+    overflow: "auto",
     justifyContent: "center",
     "& img": {
       maxWidth: "100%"
@@ -38,11 +44,7 @@ const useStyles = makeStyles({
     height: "max-content",
     marginBottom: 16,
     marginLeft: 8,
-    marginRight: 8,
-    maxWidth: "32%"
-  },
-  inputRoot: {
-    display: "inline-block"
+    marginRight: 8
   },
   button: {
     height: "max-content"

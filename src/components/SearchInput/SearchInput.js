@@ -33,7 +33,7 @@ const SearchInput = props => {
           onChange: e => onSearchChange(e)
         });
         return (
-          <div className={classes.inputRoot}>
+          <div>
             <TextField
               className={classes.searchInput}
               InputProps={{
