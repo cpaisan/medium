@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
+import SearchInput from "components/SearchInput";
 
 const useStyles = makeStyles({
   root: {
@@ -17,7 +17,8 @@ const useStyles = makeStyles({
   },
   nav: {
     gridArea: "nav",
-    placeSelf: "center"
+    placeSelf: "center",
+    display: "flex"
   },
   searchInput: {
     width: 300,
@@ -39,6 +40,15 @@ const useStyles = makeStyles({
     marginLeft: 8,
     marginRight: 8,
     maxWidth: "32%"
+  },
+  inputRoot: {
+    display: "inline-block"
+  },
+  button: {
+    height: "max-content"
+  },
+  history: {
+    width: 300
   }
 });
 
@@ -53,14 +63,19 @@ function App() {
   const classes = useStyles();
   const [searchText, setSearchText] = useState("");
   const [feed, setFeed] = useState([]);
+  const [searchHistory, setSearchHistory] = useState([]);
 
   const onSearchChange = ({ target: { value } }) => setSearchText(value);
 
   const requestMediumFeed = async () => {
     try {
       const apiResponse = await fetch(`${API_URL}/${searchText}`);
-      const { items = [] } = await apiResponse.json();
+      const {
+        items = [],
+        searchHistory: updatedSearchHistory = []
+      } = await apiResponse.json();
       setFeed(items);
+      setSearchHistory(updatedSearchHistory);
     } catch (e) {
       // TODO: display error
     }
@@ -69,13 +84,19 @@ function App() {
   return (
     <div className={classes.root}>
       <div className={classes.nav}>
-        <TextField
-          className={classes.searchInput}
-          placeholder="Search Medium..."
-          value={searchText}
-          onChange={onSearchChange}
+        <SearchInput
+          classes={classes}
+          searchText={searchText}
+          onSearchChange={onSearchChange}
+          searchHistory={searchHistory}
+          setSearchText={setSearchText}
         />
-        <Button variant="contained" color="primary" onClick={requestMediumFeed}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={requestMediumFeed}
+          className={classes.button}
+        >
           Search
         </Button>
       </div>
